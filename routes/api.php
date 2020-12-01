@@ -27,7 +27,7 @@ Route::middleware('auth:api')->group(function(){
 	
 	Route::get('/myinfo', [UserController::class, 'myInfo']);
 
-	Route::get('/signinpermissions',[UserController::class, 'signInPermissions']);
+	// Route::get('/signinpermissions',[UserController::class, 'signInPermissions']);
 
 	
 	//Users API
