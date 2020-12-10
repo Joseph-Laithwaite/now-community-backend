@@ -54,7 +54,7 @@ class Product extends Model
         'wholesale',
         'public_purchase',
         'brand_id',
-        'location_id'
+        'location_id',
     ];
 
     /**
@@ -102,6 +102,16 @@ class Product extends Model
     public function brand()
     {
         return $this->belongsTo(\App\Models\Brand::class, 'brand_id');
+    }
+    
+    public function independents()
+    {
+        return $this->belongsToMany('\App\Models\Independent','independent_stocks_product');
+    }
+    
+    public function stock()
+    {
+        return $this->hasMany('\App\Models\ProductStock');
     }
 
     /**
