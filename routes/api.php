@@ -29,7 +29,6 @@ Route::middleware('auth:api')->group(function(){
 
 	// Route::get('/signinpermissions',[UserController::class, 'signInPermissions']);
 
-	
 	//Users API
 	
 	Route::get('/users/{user_id}', [UserController::class, 'show']);
@@ -52,7 +51,8 @@ Route::middleware('auth:api')->group(function(){
 
 	// Route::get('/images',[ImageAPIController::class,'index']);
 
-		Route::get('independents/{independent_id}/product_stocks', [App\Http\Controllers\API\ProductStockAPIController::class, 'indexIndependentProducts']);
+		Route::get('independents/{independent_id}/products', [App\Http\Controllers\API\ProductStockAPIController::class, 'indexIndependentProducts']);
+		Route::get('independents/{independent_id}/product_stocks', [App\Http\Controllers\API\ProductStockAPIController::class, 'indexIndependentProductStock']);
 		Route::post('independents/{independent_id}/product_stocks', [App\Http\Controllers\API\ProductStockAPIController::class, 'storeIndependentProduct']);
 	});
 	Route::resource('product_stocks', ProductStockAPIController::class);
@@ -79,3 +79,6 @@ Route::resource('products', ProductAPIController::class);
 
 Route::resource('brands', BrandAPIController::class);
 
+
+
+Route::resource('independent_stocks_products', App\Http\Controllers\API\IndependentStocksProductAPIController::class);

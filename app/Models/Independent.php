@@ -101,6 +101,19 @@ class Independent extends Model
         return $this->hasMany(\App\Models\Brand::class, 'independent_id');
     }
 
+    public function products()
+    {
+        return $this->belongsToMany('\App\Models\Product','independent_stocks_product');
+    }
+    public function productStock()
+    {
+        return $this->belongsToMany('\App\Models\Product','independent_stocks_product')
+                    ->withPivot('id','manage_stock','date_in_stock','expriy_date','batch_id','location_id','independent_id','stock_level','archived','product_id')
+                    ->as('stock')
+                    ->withTimestamps()
+                    ;
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/

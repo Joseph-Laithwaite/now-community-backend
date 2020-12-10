@@ -42,7 +42,10 @@ class ProductStock extends Model
         'expriy_date',
         'batch_id',
         'location_id',
-        'archived'
+        'archived',
+        'intial_stock',
+        'cost',
+        'wastage',
     ];
 
     /**
@@ -55,12 +58,15 @@ class ProductStock extends Model
         'independent_id' => 'integer',
         'product_id' => 'integer',
         'manage_stock' => 'boolean',
-        'stock_level' => 'integer',
+        'stock_level' => 'float',
         'date_in_stock' => 'datetime',
         'expriy_date' => 'datetime',
         'batch_id' => 'integer',
         'location_id' => 'integer',
         'archived' => 'boolean',
+        'intial_stock' => 'float',
+        'cost' => 'float',
+        'wastage' => 'float',
     ];
 
     /**
@@ -74,12 +80,15 @@ class ProductStock extends Model
         'independent_id' => 'required',
         'product_id' => 'required',
         'manage_stock' => 'required|boolean',
-        'stock_level' => 'required',
+        'stock_level' => 'required|float',
         'date_in_stock' => 'nullable',
         'expriy_date' => 'nullable',
         'batch_id' => 'nullable',
         'location_id' => 'nullable',
         'archived' => 'nullable|boolean',
+        'intial_stock' => 'nullable|float',
+        'cost' => 'nullable|float',
+        'wastage' => 'nullable|float',
     ];
 
     /**

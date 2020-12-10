@@ -108,7 +108,7 @@ class ImageAPIController extends AppBaseController
           $request->image->storeAs('/public/'.$type.'/'.$validated['imageable_id'], $validated['name'].".".$extension);
           // $request->image->storeAs('/public', $validated['name'].".".$extension);
           $url = Storage::url($type.'/'.$validated['imageable_id'].'/'.$validated['name'].".".$extension);
-          $url = $url->validate('required|string');
+        //   $url = $url->validate('required|string');
           $image->name = $validated['name'];
           $image->description = $validated['description'];
           $image->size = $validated['size'];

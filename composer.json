@@ -21,9 +21,17 @@
         "laravelcollective/html": "^6.2",
        "infyomlabs/adminlte-templates": "8.0.x-dev",
 
-        "doctrine/dbal": "~2.3"
+        "doctrine/dbal": "~2.3",
 
+        "appointer/swaggervel": "dev-master",
+        "infyomlabs/swagger-generator": "dev-master"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "git@github.com:InfyOmLabs/swaggervel.git"
+        }
+    ],
     "require-dev": {
         "facade/ignition": "^2.3.6",
         "fzaninotto/faker": "^1.9.1",

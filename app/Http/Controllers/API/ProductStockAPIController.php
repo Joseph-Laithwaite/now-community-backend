@@ -5,6 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Http\Requests\API\CreateProductStockAPIRequest;
 use App\Http\Requests\API\UpdateProductStockAPIRequest;
 use App\Models\ProductStock;
+use App\Models\Independent;
+use App\Models\IndependentStocksProduct;
+
 use App\Repositories\ProductStockRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
@@ -31,7 +34,7 @@ class ProductStockAPIController extends AppBaseController
      *
      * @param Request $request
      * @return Response
-     */
+     */ 
     public function index(Request $request)
     {
         $productStocks = $this->productStockRepository->all(
@@ -43,20 +46,90 @@ class ProductStockAPIController extends AppBaseController
         return $this->sendResponse($productStocks->toArray(), 'Product Stocks retrieved successfully');
     }
 
-    public function indexIndependentProducts($independent_id, Request $request)
+    public function indexIndependentProducts($independent_id, Request $request){
+        // >>> collect($independent)->get('products')
+
+        return collect(Independent::with('products','products.brand')->find($independent_id))->get('products');
+    }
+
+    public function indexIndependentProductStock($independent_id, Request $request)
     {
-        $productStocks = ProductStock::
-                            with('product')
-                            ->where('independent_id','=',$independent_id)
-                            ->where('archived','=','0')
-                            ->where(function($query) {
-                                $query
-                                    ->where('expriy_date', '>=', date("Y-m-d").'T'.date("H:m:s").'.000000Z')
-                                    ->orWhere('expriy_date', null);
-                            })
-                            ->get();
-        $productStocks = $productStocks->groupBy('product_id');
-        return $this->sendResponse($productStocks->toArray(), 'Product Stocks retrieved successfully');
+        $productStocks = IndependentStocksProduct::with('product')->where('independent_id','=',$independent_id)->get();
+        return $this->sendResponse($productStocks, 'Product Stocks retrieved successfully');
+        /*
+        if($request->showArchived === 'true'){
+            $productStocks = ProductStock::
+                                with('product')
+                                ->where('independent_id','=',$independent_id)
+                                ->where('date_in_stock', '>=',$request->date_in_stock )
+                                // ->where(function($query) {
+                                //     $query
+                                //         ->where('expriy_date', '>=', date("Y-m-d").'T'.date("H:m:s").'.000000Z')
+                                //         ->orWhere('expriy_date', null);
+                                // })
+                                ->get();
+        }else{
+            $productStocks = ProductStock::
+                                with('product')
+                                ->where('independent_id','=',$independent_id)
+                                ->where('archived','=','0')
+                                // ->where('date_in_stock', '>=', $request->date_in_stock)
+                                // ->where(function($query) {
+                                //     $query
+                                //         ->where('expriy_date', '>=', date("Y-m-d").'T'.date("H:m:s").'.000000Z')
+                                //         ->orWhere('expriy_date', null);
+                                // })
+                                ->get();
+        }*/
+        // $productStocks = $productStocks->groupBy('product_id')->flatten();
+        /* 
+        $productStocks = $productStocks->groupBy('product_id')->map(function($item, $key){
+            $productStock=$item[0]['product'];
+            for($i=0; $i <= count($item)-1; $i++){
+                $collection = collect($item[$i]);
+                $stock[$i] = $collection->except(['product']);
+            };
+            // $productStock['in_stock_total']=$item->sum('stock_level');
+            $productStock['in_stock_total'] = $item->sum(function ($product) {
+                if($product['manage_stock']==true){
+                    if($product['expriy_date'] >= date("Y-m-d").'T24:00:00.000000Z' && $product['date_in_stock'] <= date("Y-m-d").'T24:00:00.000000Z'){
+                        return $product['stock_level'];
+                    }
+                }
+                return;
+            });
+            $productStock['on_order_stock'] = $item->sum(function ($product) {
+                if($product['manage_stock']==true){
+                    if($product['date_in_stock'] >= date("Y-m-d").'T24:00:00.000000Z'){
+                        return $product['initial_stock'];
+                    }
+                }
+                return;
+            });
+            $productStock['expired_stock'] = $item->sum(function ($product) {
+                if($product['manage_stock']==true){
+                    // dd(date("Y-m-d").'T24:00:00.000000Z');
+                    if($product['expriy_date'] <= date("Y-m-d").'T24:00:00.000000Z'){
+                        return $product['stock_level'];
+                    }
+                }
+                return;
+            });
+            $productStock['expires_today'] = $item->sum(function ($product) {
+                if($product['manage_stock']==true){
+                    // dd(date("Y-m-d").'T24:00:00.000000Z');
+                    if(substr($product['expriy_date'],0,10) == date("Y-m-d")){
+                        return $product['stock_level'];
+                    }
+                }
+                return;
+            });
+            
+            $productStock['stock']=$stock;
+             return $productStock;
+        });;
+        */
+        // return $this->sendResponse($productStocks, 'Product Stocks retrieved successfully');
     }
 
     /**
